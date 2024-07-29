@@ -40,7 +40,7 @@ get_scopus_count <- function(keywords, api_key, start_year = NULL, end_year = NU
 }
 
 # set parameters
-api_key <- "8e9352f580e657e97a97a21797982e7d"  # replace with API key
+api_key <- "xXxXxXxXxXxXxXxXxXxXxXxXxXx"  # replace with API key
 keywords <- c("soil", "coastal", "microplastics")
 start_year <- 2007 # it can be NULL
 end_year <- 2025 # it can be NULL
