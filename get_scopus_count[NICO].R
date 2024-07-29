@@ -67,7 +67,13 @@ print({
 
 ################################################################################
 # generate a dataframe within the years range
-years <- start_year:end_year
+if (!is.null(start_year)) {
+  years <- start_year:end_year
+} else {
+  # If start_year is NULL, assume we want from a default start year to end_year
+  default_start_year <- 2000
+  years <- default_start_year:end_year
+}
 
 # vector to store publication counts
 publication_counts <- numeric(length(years))
