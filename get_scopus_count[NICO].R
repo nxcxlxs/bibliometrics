@@ -1,8 +1,9 @@
 library(httr)
 library(jsonlite)
 
-# function to get the number of publications from Scopus with multiple keywords and a year filter
-get_scopus_count <- function(keywords, api_key, start_year = NULL, end_year = NULL) {
+# get the number of publications from Scopus with multiple keywords and a year filter
+get_scopus_count <- function(keywords, api_key,
+                             start_year = NULL, end_year = NULL) {
   url <- "https://api.elsevier.com/content/search/scopus"
   
   # combine keywords using AND
@@ -40,7 +41,7 @@ get_scopus_count <- function(keywords, api_key, start_year = NULL, end_year = NU
 }
 
 # set parameters
-api_key <- "xXxXxXxXxXxXxXxXxXxXxXxXxXx"  # replace with API key
+api_key <- "xXxXxXxXxXxXxXxXxXxXxXxXxXx" # replace with API key
 keywords <- c("soil", "coastal", "microplastics")
 start_year <- 2007 # it can be NULL
 end_year <- 2025 # it can be NULL
@@ -101,9 +102,13 @@ ggplot(data, aes(x = YEAR, y = PUBLICATIONS)) +
   geom_point() +
   scale_x_continuous(breaks = seq(min(years), max(years), 1)) +
   scale_y_continuous(breaks = seq(min(publication_counts),
-                              max(publication_counts), 535)) +
+                                  max(publication_counts), 535)) +
   labs(
     x = "Year",
-    y = "Number of Publications"
-  ) +
-  theme_minimal()
+    y = "Number of Publications") +
+  theme_minimal() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10)))
