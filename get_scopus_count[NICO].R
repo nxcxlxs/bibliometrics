@@ -44,7 +44,7 @@ get_scopus_count <- function(keywords, api_key,
 api_key <- "xXxXxXxXxXxXxXxXxXxXxXxXxXx" # replace with API key
 keywords <- c("soil", "coastal", "microplastics")
 start_year <- 2007 # it can be NULL
-end_year <- 2025 # it can be NULL
+end_year <- 2024 # it can be NULL
 
 # get the publication count
 count <- get_scopus_count(keywords, api_key, start_year, end_year)
@@ -67,7 +67,7 @@ print({
 })
 
 ################################################################################
-# generate a dataframe within the years range
+# generate a data frame within the years range
 if (!is.null(start_year)) {
   years <- start_year:end_year
 } else {
