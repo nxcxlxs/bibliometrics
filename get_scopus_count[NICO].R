@@ -61,9 +61,8 @@ print({
   }
   
   # print
-  paste("Number of publications on Scopus for keywords",
-        paste(keywords, collapse = " AND "),
-        year_range, ":", count)
+  paste0("Number of publications on Scopus for keywords ",
+         paste(keywords, collapse = " AND "), " ", year_range, ": ", count)
 })
 
 ################################################################################
