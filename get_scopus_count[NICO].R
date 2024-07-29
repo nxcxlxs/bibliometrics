@@ -71,7 +71,7 @@ print({
 if (!is.null(start_year)) {
   years <- start_year:end_year
 } else {
-  # If start_year is NULL, assume we want from a default start year to end_year
+  # if start_year is NULL, assume we want from a default start year to end_year
   default_start_year <- 2000
   years <- default_start_year:end_year
 }
