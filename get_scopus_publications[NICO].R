@@ -11,6 +11,9 @@ get_scopus_publications <- function(keywords, api_key, start_year = NULL,
   # combine keywords using AND
   query_string <- paste(keywords, collapse = " AND ")
   
+  # filter to avoid mentions in REFERENCES
+  query_string <- paste0("TITLE-ABS-KEY(", query_string, ")")
+  
   # add year filters to the query string
   if (!is.null(start_year) && !is.null(end_year)) {
     query_string <- paste0(query_string, " AND PUBYEAR AFT ", start_year - 1,
@@ -49,20 +52,23 @@ end_year <- 2023
 # get publication data
 json_data <- get_scopus_publications(keywords, api_key, start_year, end_year)
 
-# extract authors, titles and DOIs
+# extract authors, titles, dates and DOIs
 author <- json_data$`search-results`$entry$`dc:creator`
 title <- json_data$`search-results`$entry$`dc:title`
 doi <- json_data$`search-results`$entry$`prism:doi`
+date <- json_data$`search-results`$entry$`prism:coverDate`
 
 # data frame
-article_data <- data.frame(
-  Title = title,
-  DOI = doi,
-  Authors = sapply(author, function(x)
-    if (is.null(x)) NA
-    else paste(x, collapse = ", ")),
-  stringsAsFactors = FALSE
-)
+print({
+  article_data <- data.frame(
+    Authors = sapply(author, function(x)
+      if (is.null(x)) NA
+      else paste(x, collapse = ", ")),
+    Title = title,
+    Date = date,
+    DOI = doi,
+    stringsAsFactors = FALSE)
+})
 
 # write spreadsheet
 write.xlsx(article_data, paste0("scopus_articles_",
