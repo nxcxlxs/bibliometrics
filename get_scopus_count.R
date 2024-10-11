@@ -50,7 +50,7 @@ get_scopus_count <- function(keywords, api_key,
 }
 
 # set parameters
-api_key <- "8e9352f580e657e97a97a21797982e7d"  # replace with API key
+api_key <- "XXXXXXXXXXXXXXXXX"  # replace with API key
 keywords <- c("microplastic", "(soil OR land OR terrestrial)")
 countries <- c("brazil")
 start_year <- 2013

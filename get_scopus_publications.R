@@ -46,7 +46,7 @@ get_scopus_publications <- function(keywords, api_key, start_year = NULL,
 }
 
 # set parameters
-api_key <- "182098c8e90024dff22a753c3a680f39"  # replace with your API key
+api_key <- "XXXXXXXXXXXXXXXXXXXX"  # replace with your API key
 keywords <- c("microplastic","(soil OR land OR terrestrial)")
 countries <- c("brazil")
 start_year <- 2013
