@@ -3,7 +3,8 @@ library(jsonlite)
 library(ggplot2)
 
 # function to get the number of publications from Scopus with multiple keywords and a year filter
-get_scopus_count <- function(keywords, api_key, start_year = NULL, end_year = NULL) {
+get_scopus_count <- function(keywords, api_key,
+                             start_year = NULL, end_year = NULL) {
   url <- "https://api.elsevier.com/content/search/scopus"
   
   # combine keywords using AND
@@ -11,6 +12,11 @@ get_scopus_count <- function(keywords, api_key, start_year = NULL, end_year = NU
   
   # filter to avoid mentions in REFERENCES
   query_string <- paste0("TITLE-ABS-KEY(", query_string, ")")
+  
+  # filter for affiliation countries plus "brazil"
+  #countries <- paste(countries, collapse = " OR ")
+  query_string <- 
+    paste0(query_string, " AND AFFILCOUNTRY(", countries, ")") 
   
   # add year filters to the query string
   if (!is.null(start_year) && !is.null(end_year)) {
@@ -44,10 +50,11 @@ get_scopus_count <- function(keywords, api_key, start_year = NULL, end_year = NU
 }
 
 # set parameters
-api_key <- "xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx"  # replace with API key
-keywords <- c("coastal", "soil", "microplastics")
-start_year <- 2014 # it can be NULL
-end_year <- 2024 # it can be NULL
+api_key <- "8e9352f580e657e97a97a21797982e7d"  # replace with API key
+keywords <- c("microplastic", "(soil OR land OR terrestrial)")
+countries <- c("brazil")
+start_year <- 2013
+end_year <- 2023
 
 # get the publication count
 count <- get_scopus_count(keywords, api_key, start_year, end_year)
@@ -93,13 +100,11 @@ for (i in seq_along(years)) {
 }
 
 # data frame
-print({
+print(
   data <- data.frame(
     YEAR = years,
     PUBLICATIONS = publication_counts
-  )
-  data
-})
+  ))
 
 # plot
 ggplot(data, aes(x = YEAR, y = PUBLICATIONS)) +
@@ -107,7 +112,7 @@ ggplot(data, aes(x = YEAR, y = PUBLICATIONS)) +
   geom_point() +
   scale_x_continuous(breaks = seq(min(years), max(years), 1)) +
   scale_y_continuous(breaks = seq(min(publication_counts),
-                                  max(publication_counts), 5)) +
+                              max(publication_counts), 535)) +
   labs(                                             # ^ watch out for the increment of the sequence
     x = "Ano",
     y = "Número de publicações") +
@@ -135,8 +140,8 @@ coefficients <- coef(exp_model)
 r_squared <- summary(exp_model)$r.squared
 
 # create the exponential equation text
-intercept <- gsub("\\.", ",", round(coefficients[1], 2))
-slope <- gsub("\\.", ",", round(coefficients[2], 2))
+intercept <- gsub("\\.", ",", round(coefficients[1], 5))
+slope <- gsub("\\.", ",", round(coefficients[2], 5))
 
 # construct the equation with proper formatting
 exp_eq <- bquote(italic(y) == italic(e)^{.(intercept) + (.(slope) * italic(x))} - 1)
@@ -154,8 +159,10 @@ data$fit <- exp(predict(exp_model)) - 1 # subtract 1 to reverse the log transfor
 
 # plot with annotations
 ggplot(data, aes(x = YEAR, y = PUBLICATIONS)) +
-  geom_line(color = "darkred", size = 1.25) +
-  geom_line(aes(y = fit), color = "darkorange", linetype = 9, linewidth = 1.25) +  # exponential trend line
+  #geom_line(color = "darkred", size = 1.25) +
+  geom_point(size = 2.25, color = "darkred") +
+  #geom_line(aes(y = fit), color = "darkorange", linetype = 9, linewidth = 1.25) +  # exponential trend line
+  geom_line(aes(y = fit), color = "darkorange", linetype = 9, linewidth = 1.25) +
   scale_x_continuous(breaks = seq(min(data$YEAR), max(data$YEAR), 1)) +
   scale_y_continuous(breaks = seq(0, max(data$PUBLICATIONS) + 5, 5)) +
   labs(
@@ -172,7 +179,7 @@ ggplot(data, aes(x = YEAR, y = PUBLICATIONS)) +
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank(),
   ) +
-  annotate("text", x = max(data$YEAR) - 1.5, y = max(data$PUBLICATIONS) - 26.2, 
+  annotate("text", x = max(data$YEAR) - 4.5, y = max(data$PUBLICATIONS) - 12.2, 
            label = exp_eq_str, color = "black", size = 3.7 , parse = TRUE) +
-  annotate("text", x = max(data$YEAR) - 1.1, y = max(data$PUBLICATIONS) - 28.8, 
+  annotate("text", x = max(data$YEAR) - 4.1, y = max(data$PUBLICATIONS) - 13.8, 
            label = r_squared_text_str, color = "black", size = 3.7, parse = TRUE)
