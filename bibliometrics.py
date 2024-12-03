@@ -1,185 +1,129 @@
 import requests
 import pandas as pd
-import matplotlib.pyplot as plt
 import time
-import re
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+import sys
 
+# function to build the query string
+def build_query_string(keywords, countries, start_year, end_year):
+    query = f"TITLE-ABS-KEY({keywords})"
+    if countries:
+        query += f" AND AFFILCOUNTRY({' OR '.join(countries)})"
+    if start_year:
+        query += f" AND PUBYEAR AFT {start_year - 1}"
+    if end_year:
+        query += f" AND PUBYEAR BEF {end_year + 1}"
+    return query
 
-# function to get the number of publications from Scopus
-def get_scopus_count(keywords, api_key, countries, start_year=None, end_year=None):
+# function to extract required fields from a single entry
+def extract_fields(entry):
+    author = entry.get("dc:creator", "N/A")
+    title = entry.get("dc:title", "N/A")
+    doi = entry.get("prism:doi", "N/A")
+    date = entry.get("prism:coverDate", "N/A")
+
+    # extract affiliation countries
+    affiliations = entry.get("affiliation", [])
+    affiliation_countries = ", ".join(
+        aff.get("affiliation-country", "N/A") if aff.get("affiliation-country") else "N/A"
+        for aff in affiliations
+    )
+    return author, title, doi, date, affiliation_countries
+
+# function to fetch publication details from Scopus
+def fetch_publication_details(keywords, api_key, countries, start_year, end_year):
     url = "https://api.elsevier.com/content/search/scopus"
-    query_string = f"TITLE-ABS-KEY({keywords})"
+    query_string = build_query_string(keywords, countries, start_year, end_year)
+    headers = {"X-ELS-APIKey": api_key, "Accept": "application/json"}
+    publications = []
 
-    if countries:
-        query_string = f"{query_string} AND AFFILCOUNTRY({' OR '.join(countries)})"
+    start = 0
+    count = 25  # number of entries per API request
+    total_results = None
 
-    if start_year and end_year:
-        query_string = f"{query_string} AND PUBYEAR AFT {start_year - 1} AND PUBYEAR BEF {end_year + 1}"
-    elif start_year:
-        query_string = f"{query_string} AND PUBYEAR AFT {start_year - 1}"
-    elif end_year:
-        query_string = f"{query_string} AND PUBYEAR BEF {end_year + 1}"
+    print("Fetching publication data from Scopus...")
+    while True:
+        # fetch the first batch to determine the total number of results
+        params = {"query": query_string, "start": start, "count": count}
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code != 200:
+            raise Exception(f"API request failed with status code {response.status_code}.\n{response.text}")
 
-    query = {
-        "query": query_string,
-        "apiKey": api_key,
-        "httpAccept": "application/json"
-    }
+        json_data = response.json()
+        if total_results is None:
+            total_results = int(json_data["search-results"]["opensearch:totalResults"])
+            print(f"Total publications found: {total_results}")
+            progress_bar = tqdm(total=total_results, desc="Fetching publications", unit=" entries")
 
-    response = requests.get(url, params=query)
+        entries = json_data["search-results"].get("entry", [])
+        for entry in entries:
+            publications.append(extract_fields(entry))
+            progress_bar.update(1)  # update progress bar for each entry
 
-    if response.status_code != 200:
-        raise Exception("Failed to fetch data from Scopus API. Please check your API key and query.")
+        # break the loop if all results are processed
+        start += count
+        if start >= total_results:
+            break
 
-    json_data = response.json()
-    count = int(json_data["search-results"]["opensearch:totalResults"])
-    return count
+        # sleep to avoid hitting rate limits
+        time.sleep(0.5)
 
+    progress_bar.close()  # close the progress bar when done
+    return publications
 
-# function to get publication details from Scopus
-def get_scopus_publications(keywords, api_key, countries,
-                            start_year=None, end_year=None,
-                            start_index=0, count=200):
-    url = "https://api.elsevier.com/content/search/scopus"
-    query_string = f"TITLE-ABS-KEY({keywords})"
+# function to save data spreadsheet
+def save_to_excel(data, filename):
+    df = pd.DataFrame(data, columns=["Author", "Title", "DOI", "Date", "Affiliation Countries"])
+    df.to_excel(filename, index=False, engine='openpyxl')
+    print(f"Data saved to {filename}")
 
-    if countries:
-        query_string = f"{query_string} AND AFFILCOUNTRY({' OR '.join(countries)})"
+# function to create and save a plot showing publications per year
+def plot_publications_by_year(publications, output_file):
+    # extract years from the publication dates
+    years = [int(pub[3].split("-")[0]) if pub[3] != "N/A" else None for pub in publications]
+    years = [year for year in years if year is not None]  # remove None values
 
-    if start_year and end_year:
-        query_string = f"{query_string} AND PUBYEAR AFT {start_year - 1} AND PUBYEAR BEF {end_year + 1}"
-    elif start_year:
-        query_string = f"{query_string} AND PUBYEAR AFT {start_year - 1}"
-    elif end_year:
-        query_string = f"{query_string} AND PUBYEAR BEF {end_year + 1}"
-
-    headers = {
-        "X-ELS-APIKey": api_key,
-        "Accept": "application/json"
-    }
-
-    params = {
-        "query": query_string,
-        "start": start_index,
-        "count": count
-    }
-
-    response = requests.get(url, headers=headers, params=params)
-
-    if response.status_code != 200:
-        raise Exception("Failed to fetch data from Scopus API. Please check your API key and query.")
-
-    json_data = response.json()
-    return json_data
-
-
-def main():
-    # get user input
-    keywords_input = input("Enter keywords: ")
-    api_key = input("Enter your Scopus API key: ")
-    countries_input = input("Enter affiliation countries: ")
-    start_year_input = input("Enter start year: ")
-    end_year_input = input("Enter end year: ")
-
-    countries = countries_input.split() if countries_input else []
-    start_year = int(start_year_input) if start_year_input else None
-    end_year = int(end_year_input) if end_year_input else None
-
-    # Determine if the input is a simple space-separated or a complex query
-    if 'OR' in keywords_input or 'AND' in keywords_input or '*' in keywords_input:
-        keywords = keywords_input
-    else:
-        keywords = " AND ".join(keywords_input.split())
-
-    # construct the query string
-    query_string = f"TITLE-ABS-KEY({keywords})"
-    if countries:
-        query_string = f"{query_string} AND AFFILCOUNTRY({' OR '.join(countries)})"
-    if start_year and end_year:
-        query_string = f"{query_string} AND PUBYEAR AFT {start_year - 1} AND PUBYEAR BEF {end_year + 1}"
-    elif start_year:
-        query_string = f"{query_string} AND PUBYEAR AFT {start_year - 1}"
-    elif end_year:
-        query_string = f"{query_string} AND PUBYEAR BEF {end_year + 1}"
-
-    # construct the filename based on the query string
-    clean_query_string = re.sub(r'[():"\s]|(?:AND|OR)', lambda m:
-        '_AND_' if m.group(0) == 'AND' else
-        '_OR_' if m.group(0) == 'OR' else
-        '_' if m.group(0).isspace() else
-        '', query_string)
-
-    filename = f"scopus_articles_{clean_query_string}.xlsx"
-
-    # get the total number of publications
-    total_results = get_scopus_count(keywords, api_key, countries, start_year, end_year)
-    print(f"Total publications: {total_results}")
-
-    # Fetch publication counts for each year
-    if start_year and end_year:
-        years = list(range(start_year, end_year + 1))
-    elif start_year:
-        years = list(range(start_year, time.localtime().tm_year + 1))
-    elif end_year:
-        years = list(range(1900, end_year + 1))
-    else:
-        years = list(range(1900, time.localtime().tm_year + 1))
-
-    publication_counts = []
-
-    for year in years:
-        count = get_scopus_count(keywords, api_key, countries, start_year=year, end_year=year)
-        publication_counts.append(count)
-
-    # create a data frame
-    data = pd.DataFrame({
-        "YEAR": years,
-        "PUBLICATIONS": publication_counts
-    })
+    # count publications per year
+    publication_counts = pd.Series(years).value_counts().sort_index()
 
     # plot the data
     plt.figure(figsize=(10, 6))
-    plt.plot(data["YEAR"], data["PUBLICATIONS"], marker='o', color='red')
-    plt.xlabel("Year")
-    plt.ylabel("Number of Publications")
-    plt.title("Number of Publications Over Years")
-    plt.grid(True)
-    plt.xticks(years)
-    plt.yticks(range(0, max(publication_counts) + 5, 5))
-    plt.show()
+    plt.bar(publication_counts.index, publication_counts.values, color='skyblue')
+    plt.xlabel("Year", fontsize=12)
+    plt.ylabel("Publication Count", fontsize=12)
+    plt.title("Publications Over Time", fontsize=14)
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
+    plt.tight_layout()
 
-    # fetch detailed publication data
-    batch_size = 200
-    all_articles = []
+    # save plot
+    plt.savefig(output_file, dpi=300)
+    print(f"Plot saved as {output_file}")
 
-    for start_index in range(0, total_results, batch_size):
-        json_data = get_scopus_publications(keywords, api_key, countries, start_year, end_year, start_index, batch_size)
-        entries = json_data["search-results"]["entry"]
 
-        for entry in entries:
-            authors = entry.get("dc:creator", "")
-            title = entry.get("dc:title", "")
-            doi = entry.get("prism:doi", "")
-            date = entry.get("prism:coverDate", "")
-            affiliation_countries = ", ".join([aff["affiliation-country"] for aff in entry.get("affiliation", [])])
+def main():
+    # user input
+    keywords_input = input("Enter keywords (e.g., microplastics OR soil): ")
+    api_key = input("Enter your Scopus API key: ")
+    countries_input = input("Enter affiliation countries (comma-separated, or leave blank): ")
+    start_year = int(input("Enter start year (e.g., 2013): "))
+    end_year = int(input("Enter end year (e.g., 2024): "))
 
-            all_articles.append({
-                "Authors": authors,
-                "Title": title,
-                "Date": date,
-                "DOI": doi,
-                "AffiliationCountry": affiliation_countries
-            })
+    countries = [country.strip() for country in countries_input.split(",")] if countries_input else []
 
-        time.sleep(1)  # delay to avoid hitting API limits
+    # fetch publication details
+    publications = fetch_publication_details(keywords_input, api_key, countries, start_year, end_year)
 
-    # create a data frame for all articles
-    df_articles = pd.DataFrame(all_articles)
-    print(f"Total articles fetched: {len(df_articles)}")
+    # save data to Excel
+    output_excel = "publication_details.xlsx"
+    save_to_excel(publications, output_excel)
 
-    # write to Excel
-    df_articles.to_excel(filename, index=False)
+    # save the plot as PNG
+    output_plot = "publications_by_year.png"
+    plot_publications_by_year(publications, output_plot)
 
+
+    sys.exit()
 
 if __name__ == "__main__":
     main()
