@@ -4,6 +4,9 @@ import time
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import sys
+import re
+import datetime
+
 
 # function to build the query string
 def build_query_string(keywords, countries, start_year, end_year):
@@ -15,6 +18,7 @@ def build_query_string(keywords, countries, start_year, end_year):
     if end_year:
         query += f" AND PUBYEAR BEF {end_year + 1}"
     return query
+
 
 # function to extract required fields from a single entry
 def extract_fields(entry):
@@ -30,6 +34,7 @@ def extract_fields(entry):
         for aff in affiliations
     )
     return author, title, doi, date, affiliation_countries
+
 
 # function to fetch publication details from Scopus
 def fetch_publication_details(keywords, api_key, countries, start_year, end_year):
@@ -72,11 +77,13 @@ def fetch_publication_details(keywords, api_key, countries, start_year, end_year
     progress_bar.close()  # close the progress bar when done
     return publications
 
-# function to save data spreadsheet
+
+# function to save spreadsheet
 def save_to_excel(data, filename):
     df = pd.DataFrame(data, columns=["Author", "Title", "DOI", "Date", "Affiliation Countries"])
     df.to_excel(filename, index=False, engine='openpyxl')
     print(f"Data saved to {filename}")
+
 
 # function to create and save a plot showing publications per year
 def plot_publications_by_year(publications, output_file):
@@ -90,6 +97,7 @@ def plot_publications_by_year(publications, output_file):
     # plot the data
     plt.figure(figsize=(10, 6))
     plt.bar(publication_counts.index, publication_counts.values, color='skyblue')
+    plt.xticks(publication_counts.index, rotation=45, fontsize=10)
     plt.xlabel("Year", fontsize=12)
     plt.ylabel("Publication Count", fontsize=12)
     plt.title("Publications Over Time", fontsize=14)
@@ -103,27 +111,40 @@ def plot_publications_by_year(publications, output_file):
 
 def main():
     # user input
-    keywords_input = input("Enter keywords (e.g., microplastics OR soil): ")
+    keywords_input = input("Enter keywords (e.g., fertility AND soil): ")
     api_key = input("Enter your Scopus API key: ")
-    countries_input = input("Enter affiliation countries (comma-separated, or leave blank): ")
-    start_year = int(input("Enter start year (e.g., 2013): "))
-    end_year = int(input("Enter end year (e.g., 2024): "))
+    countries_input = input("Enter affiliation countries (comma-separated, optional): ")
+    start_year = input("Enter start year (optional): ") or "1788"  # temporal coverage as informed in Scopus Wikipedia page
+    end_year = input("Enter end year (optional): ") or str(datetime.datetime.now().year)
+
+    try:
+        start_year = int(start_year)
+        end_year = int(end_year)
+    except ValueError:
+        print("Years must be integers.")
+        return
 
     countries = [country.strip() for country in countries_input.split(",")] if countries_input else []
+
+    # build query string
+    query_string = build_query_string(keywords_input, countries, start_year, end_year)
+
+    # clear query string for filenames
+    clean_query = re.sub(r'[<>:"/\\|?*]', '_', query_string)
 
     # fetch publication details
     publications = fetch_publication_details(keywords_input, api_key, countries, start_year, end_year)
 
-    # save data to Excel
-    output_excel = "publication_details.xlsx"
+    # save data to Excel with query string as filename
+    output_excel = f"{clean_query}.xlsx"
     save_to_excel(publications, output_excel)
 
-    # save the plot as PNG
-    output_plot = "publications_by_year.png"
+    # save plot with query string as filename
+    output_plot = f"{clean_query}.png"
     plot_publications_by_year(publications, output_plot)
 
-
     sys.exit()
+
 
 if __name__ == "__main__":
     main()
