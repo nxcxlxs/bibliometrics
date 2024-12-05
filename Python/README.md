@@ -1,7 +1,7 @@
 # **DISCLAIMER:**
 
-**This script is designed to fetch publication data from the Scopus API, a service provided by Elsevier.**
-**The Scopus API allows researchers and developers to query a vast database of academic publications programmatically.**
+**This script is designed to fetch publication data from the Scopus® API, a service provided by Elsevier.**
+**The Scopus® API allows researchers and developers to query a vast database of academic publications programmatically.**
 
 **An API, or Application Programming Interface, is a set of rules and protocols that allows software applications to communicate with each other. APIs define how requests are made, what data format to use and how responses are returned. They are commonly used to access data or services provided by external plataforms, enabling developers to integrate external functionalitites into their own applications.**
 
@@ -40,6 +40,10 @@
 
 • `datetime`: Facilitates date and time operations, such as obtaining the current year dynamically.
 
+• `pytest`: Main framework for testing.
+
+• `pytest-mock`: Plugin that extends `pytest` to help with mocking in tests.
+
 ## FUNCTIONS:
 • `build_query_string(keywords, countries, start_year, end_year)`: Constructs the search query string for the Scopus API.
 
@@ -64,7 +68,7 @@ By running `python project.py` the user will be prompted to:
 
 0. Keywords: Enter terms for querying publications (*e.g.*, "fertility AND soil").
 
-1. Scopus API Key: Provide key to access the Scopus API.
+1. Scopus API Key: Provide key to access the API.
 
 4. Countries (comma-separated, optional): Specify countries to filter results by affiliations.
 

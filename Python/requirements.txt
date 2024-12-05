@@ -3,3 +3,4 @@ pandas
 matplotlib
 tqdm
 pytest
+pytest-mock
