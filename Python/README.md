@@ -3,12 +3,12 @@
 **This script is designed to fetch publication data from the Scopus API, a service provided by Elsevier.**
 **The Scopus API allows researchers and developers to query a vast database of academic publications programmatically.**
 
-**An API, or Application Programming Interface,is a set of rules and protocols that allows software applications to communicate with each other. APIs define how requests area made, what data format to use and how responses are returned. They are commonly used to access data or services provided by external plataforms, enabling developers to integrate external functionalitites into their own applications.**
+**An API, or Application Programming Interface, is a set of rules and protocols that allows software applications to communicate with each other. APIs define how requests are made, what data format to use and how responses are returned. They are commonly used to access data or services provided by external plataforms, enabling developers to integrate external functionalitites into their own applications.**
 
-**THIS SCRIPT REQUIRES A VALID SCOPUS API KEY TO FUNCTION!**
+***THIS SCRIPT REQUIRES A VALID SCOPUS API KEY TO FUNCTION!***
 
 **An API key is a unique identifier provided by Elsevier to access their API services.**
-**You must have an active Scopus account and request an API key to use this script.**
+**You must have an active Scopus account and request a key to use this script.**
 
 **Visit [Elsevier Develop Portal](https://dev.elsevier.com/sc_apis.html) for more information.**
 
