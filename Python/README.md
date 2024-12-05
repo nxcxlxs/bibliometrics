@@ -58,14 +58,16 @@ Handle large results using `start` and `count` parameters to fetch in batches, u
 
 # **HOW TO USE**
 
+First of all, execute `python -m pip install -r requirements.txt` to install the packages needed.
+
 By running `python project.py` the user will be prompted to:
 
-1. Keywords: Enter terms for querying publications (*e.g.*, "fertility AND soil").
+0. Keywords: Enter terms for querying publications (*e.g.*, "fertility AND soil").
 
-2. Scopus API Key: Provide key to access the Scopus API.
+1. Scopus API Key: Provide key to access the Scopus API.
 
-3. Countries (comma-separated, optional): Specify countries to filter results by affiliations.
+4. Countries (comma-separated, optional): Specify countries to filter results by affiliations.
 
-4. Start Year (integer, optional): Define the starting year for publication filtering. Defaults to 1788 (temporal coverage as informed by [Scopus Wikipedia page](https://en.wikipedia.org/wiki/Scopus))
+5. Start Year (integer, optional): Define the starting year for publication filtering. Defaults to 1788 (temporal coverage as informed by [Scopus Wikipedia page](https://en.wikipedia.org/wiki/Scopus))
 
-5. End Year (integer, optional): Define the ending year for publication filtering. Defaults to the current year.
+6. End Year (integer, optional): Define the ending year for publication filtering. Defaults to the current year.
