@@ -14,7 +14,7 @@
 
 #
 
-*The code fetches scientific publication details based on user-defined search parameters, processes the data, and outputs the results to a spreadsheet and a bar chart. This project is based in a R script written to help bibliometrics studies from Sengis (Federal University of Santa Catarina Laboratory of Sensing, Inovation and Geoprocessing) and is available in [my personal GitHub](https://github.com/nxcxlxs/bibliometrics/tree/main/R)*
+*The code fetches scientific publication details based on user-defined search parameters, processes the data, and outputs the results to a spreadsheet and a bar chart. This project is based in a R script written to help bibliometrics studies from [Sengis](https://www.instagram.com/sengis.ufsc/) (Federal University of Santa Catarina Laboratory of Sensing, Inovation and Geoprocessing) and is available in [my personal GitHub](https://github.com/nxcxlxs/bibliometrics/tree/main/R)*
 
 **Information about data structure, query construction method, API description, root-endpoint and response formats where acquired in the Elsevier's Scopus guides and documentations:**
 
