@@ -10,7 +10,7 @@
 **An API key is a unique identifier provided by Elsevier to access their API services.**
 **You must have an active Scopus account and request a key to use this script.**
 
-**Visit [Elsevier Develop Portal](https://dev.elsevier.com/sc_apis.html) for more information.**
+**Visit [Elsevier Developer Portal](https://dev.elsevier.com/sc_apis.html) for more information.**
 
 #
 
