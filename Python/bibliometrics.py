@@ -78,43 +78,12 @@ def fetch_publication_details(keywords, api_key, countries, start_year, end_year
     return publications
 
 
-# function to save spreadsheet
-def save_to_excel(data, filename):
-    df = pd.DataFrame(data, columns=["Author", "Title", "DOI", "Date", "Affiliation Countries"])
-    df.to_excel(filename, index=False, engine='openpyxl')
-    print(f"Data saved to {filename}")
-
-
-# function to create and save a plot showing publications per year
-def plot_publications_by_year(publications, output_file):
-    # extract years from the publication dates
-    years = [int(pub[3].split("-")[0]) if pub[3] != "N/A" else None for pub in publications]
-    years = [year for year in years if year is not None]  # remove None values
-
-    # count publications per year
-    publication_counts = pd.Series(years).value_counts().sort_index()
-
-    # plot the data
-    plt.figure(figsize=(10, 6))
-    plt.bar(publication_counts.index, publication_counts.values, color='skyblue')
-    plt.xticks(publication_counts.index, rotation=45, fontsize=10)
-    plt.xlabel("Year", fontsize=12)
-    plt.ylabel("Publication Count", fontsize=12)
-    plt.title("Publications Over Time", fontsize=14)
-    plt.grid(axis="y", linestyle="--", alpha=0.7)
-    plt.tight_layout()
-
-    # save plot
-    plt.savefig(output_file, dpi=300)
-    print(f"Plot saved as {output_file}")
-
-
 def main():
     # user input
     keywords_input = input("Enter keywords (e.g., fertility AND soil): ")
     api_key = input("Enter your Scopus API key: ")
     countries_input = input("Enter affiliation countries (comma-separated, optional): ")
-    start_year = input("Enter start year (optional): ") or "1788"  # temporal coverage as informed in Scopus Wikipedia page
+    start_year = input("Enter start year (optional): ") or "1788"  # temporal coverage informed in Scopus Wikipedia page
     end_year = input("Enter end year (optional): ") or str(datetime.datetime.now().year)
 
     try:
@@ -137,11 +106,31 @@ def main():
 
     # save data to Excel with query string as filename
     output_excel = f"{clean_query}.xlsx"
-    save_to_excel(publications, output_excel)
+    df = pd.DataFrame(publications, columns=["Author", "Title", "DOI", "Date", "Affiliation Countries"])
+    df.to_excel(output_excel, index=False, engine='openpyxl')
+    print(f"Data saved to {output_excel}")
 
     # save plot with query string as filename
     output_plot = f"{clean_query}.png"
-    plot_publications_by_year(publications, output_plot)
+    years = [int(pub[3].split("-")[0]) if pub[3] != "N/A" else None for pub in publications]
+    years = [year for year in years if year is not None]  # remove None values
+
+    # count publications per year
+    publication_counts = pd.Series(years).value_counts().sort_index()
+
+    # plot the data
+    plt.figure(figsize=(10, 6))
+    plt.bar(publication_counts.index, publication_counts.values, color='skyblue')
+    plt.xticks(publication_counts.index, rotation=45, fontsize=10)
+    plt.xlabel("Year", fontsize=12)
+    plt.ylabel("Publication Count", fontsize=12)
+    plt.title("Publications Over Time", fontsize=14)
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
+    plt.tight_layout()
+
+    # save plot
+    plt.savefig(output_plot, dpi=300)
+    print(f"Plot saved as {output_plot}")
 
     sys.exit()
 

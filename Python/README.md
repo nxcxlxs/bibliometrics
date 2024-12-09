@@ -52,11 +52,7 @@
 • `fetch_publication_details(keywords, api_key, countries, start_year, end_year)`: Retrieves publications data from Scopus API.<br>
 Handle large results using `start` and `count` parameters to fetch in batches, uses `time.sleep()` to delay between requests and tracks the progress using `tqdm()`.
 
-• `save_to_excel(data, filename)`: Creates a spreadsheet (.xlsx).
-
-• `plot_publication_by_year(publications, output_file)`: Creates a bar chart (.png) for the annual count of publications.
-
-• `main()`: Collects user inputs for search parameters, fetching, saving and plotting.<br>
+• `main()`: Collects user inputs for search parameters, fetches publication data, saves the data to a spreadsheet (.xlsx), and creates a bar chart (.png) for the annual count of publications.
 
 
 
