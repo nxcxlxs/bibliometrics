@@ -1,4 +1,4 @@
-# **DISCLAIMER:**
+# **IMPORTANT NOTICE:**
 
 **This script is designed to fetch publication data from the Scopus® API, a service provided by Elsevier.**
 **The Scopus® API allows researchers and developers to query a vast database of academic publications programmatically.**
@@ -10,11 +10,11 @@
 **An API key is a unique identifier provided by Elsevier to access their API services.**
 **You must have an active Scopus account and request a key to use this script.**
 
-**Visit [Elsevier Developer Portal](https://dev.elsevier.com/sc_apis.html) for more information.**
+**Visit [Elsevier Develop Portal](https://dev.elsevier.com/sc_apis.html) for more information.**
 
 #
 
-*The code fetches scientific publication details based on user-defined search parameters, processes the data, and outputs the results to a spreadsheet and a bar chart. This project is based in a R script written to help bibliometrics studies from [Sengis](https://www.instagram.com/sengis.ufsc/) (Federal University of Santa Catarina Laboratory of Sensing, Inovation and Geoprocessing) and is available in [my personal GitHub](https://github.com/nxcxlxs/bibliometrics/tree/main/R)*
+*The code fetches scientific publication details based on user-defined search parameters, processes the data, and outputs the results to a spreadsheet and a bar chart. This project is based in a R script written to help bibliometrics studies from Sengis (Federal University of Santa Catarina Laboratory of Sensing, Inovation and Geoprocessing) and is available in [my personal GitHub](https://github.com/nxcxlxs/bibliometrics/tree/main/R)*
 
 **Information about data structure, query construction method, API description, root-endpoint and response formats where acquired in the Elsevier's Scopus guides and documentations:**
 
