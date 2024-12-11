@@ -77,22 +77,6 @@ def build_query_string(keywords, countries, start_year, end_year):
     return query
 
 
-# function to extract required fields from a single entry
-def extract_fields(entry):
-    author = entry.get("dc:creator", "N/A")
-    title = entry.get("dc:title", "N/A")
-    doi = entry.get("prism:doi", "N/A")
-    date = entry.get("prism:coverDate", "N/A")
-
-    # extract affiliation countries
-    affiliations = entry.get("affiliation", [])
-    affiliation_countries = ", ".join(
-        aff.get("affiliation-country", "N/A") if aff.get("affiliation-country") else "N/A"
-        for aff in affiliations
-    )
-    return author, title, doi, date, affiliation_countries
-
-
 # function to fetch publication details from Scopus
 def fetch_publication_details(keywords, api_key, countries, start_year, end_year):
     url = "https://api.elsevier.com/content/search/scopus"
@@ -133,6 +117,22 @@ def fetch_publication_details(keywords, api_key, countries, start_year, end_year
 
     progress_bar.close()  # close the progress bar when done
     return publications
+
+
+# function to extract required fields from a single entry
+def extract_fields(entry):
+    author = entry.get("dc:creator", "N/A")
+    title = entry.get("dc:title", "N/A")
+    doi = entry.get("prism:doi", "N/A")
+    date = entry.get("prism:coverDate", "N/A")
+
+    # extract affiliation countries
+    affiliations = entry.get("affiliation", [])
+    affiliation_countries = ", ".join(
+        aff.get("affiliation-country", "N/A") if aff.get("affiliation-country") else "N/A"
+        for aff in affiliations
+    )
+    return author, title, doi, date, affiliation_countries
 
 
 if __name__ == "__main__":
