@@ -102,4 +102,4 @@ for (start_index in seq(0, total_results - 1, by = batch_size)) {
 print(paste("Total articles fetched:", nrow(all_articles)))
 
 # write the excel file
-write.xlsx(all_articles, paste0("scopus_articles_", start_year, "-", end_year, "[CBA]", ".xlsx"))
+write.xlsx(all_articles, paste0("scopus_articles_", start_year, "-", end_year, ".xlsx"))
