@@ -1,0 +1,4 @@
+httr
+jsonlite
+ggplot2
+openxlsx
