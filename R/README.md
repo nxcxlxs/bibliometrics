@@ -39,14 +39,10 @@
 
 First of all, ensure you have R and the necessary packages installed. You can install the required packages using the following commands:
 
-
 `install.packages("httr")`
-`install.packages("jsonlite")
+`install.packages("jsonlite")`
 `install.packages("ggplot2")`
 `install.packages("openxlsx")`
-
-
-# **HOW TO USE**
 
 0. Keywords: Enter terms for querying publications (e.g., "microplastic AND soil").
 
