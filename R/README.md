@@ -14,8 +14,6 @@
 
 #
 
-*The code fetches scientific publication details based on user-defined search parameters, processes the data, and outputs the results to a spreadsheet and a bar chart. This project is based on an R script written to help bibliometric studies from Sengis (Federal University of Santa Catarina Laboratory of Sensing, Innovation, and Geoprocessing) and is available in [my personal GitHub](https://github.com/nxcxlxs/bibliometrics/tree/main/R)*
-
 **Information about data structure, query construction method, API description, root-endpoint, and response formats were acquired from Elsevier's Scopus guides and documentation:**
 
 • [Scopus LibGuide](https://elsevier.libguides.com/Scopus/topical-search)
