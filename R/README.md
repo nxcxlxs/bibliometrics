@@ -37,7 +37,7 @@
 
 # **HOW TO USE**
 
-First of all, ensure you have R and the necessary packages installed. You can install the required packages using the following commands:
+First of all, ensure you have R and the necessary packages installed. You can install the required packages downloading the text file provided and executing the following commands:
 
 ```r
 requirements <- readLines("requirements.txt")
