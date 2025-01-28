@@ -47,6 +47,7 @@ for (pkg in requirements) {
     install.packages(pkg)
   }
 }
+```
 
 0. Keywords: Enter terms for querying publications (e.g., "microplastic AND soil").
 
