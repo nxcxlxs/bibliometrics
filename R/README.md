@@ -14,8 +14,6 @@
 
 #
 
-*The code fetches scientific publication details based on user-defined search parameters, processes the data, and outputs the results to a spreadsheet and a bar chart. This project is based on an R script written to help bibliometric studies from Sengis (Federal University of Santa Catarina Laboratory of Sensing, Innovation, and Geoprocessing) and is available in [my personal GitHub](https://github.com/nxcxlxs/bibliometrics/tree/main/R)*
-
 **Information about data structure, query construction method, API description, root-endpoint, and response formats were acquired from Elsevier's Scopus guides and documentation:**
 
 • [Scopus LibGuide](https://elsevier.libguides.com/Scopus/topical-search)
@@ -36,20 +34,15 @@
 
 • `get_scopus_publications(keywords, api_key, start_year, end_year, start_index, count, countries)`: Retrieves publications data from the Scopus API. Handles large results using `start` and `count` parameters to fetch in batches, uses `Sys.sleep()` to delay between requests.
 
-• `main()`: Collects user inputs for search parameters, fetches publication data, saves the data to a spreadsheet (.xlsx), and creates a bar chart (.png) for the annual count of publications.
 
 # **HOW TO USE**
 
 First of all, ensure you have R and the necessary packages installed. You can install the required packages using the following commands:
 
-
 `install.packages("httr")`
-`install.packages("jsonlite")
+`install.packages("jsonlite")`
 `install.packages("ggplot2")`
 `install.packages("openxlsx")`
-
-
-# **HOW TO USE**
 
 0. Keywords: Enter terms for querying publications (e.g., "microplastic AND soil").
 
