@@ -39,13 +39,14 @@
 
 First of all, ensure you have R and the necessary packages installed. You can install the required packages using the following commands:
 
-```requirements <- readLines("requirements.txt")```
+```r
+requirements <- readLines("requirements.txt")
 
-```for (pkg in requirements) {```
-  ```if (!requireNamespace(pkg, quietly = TRUE)) {```
-    ```install.packages(pkg)```
-  ```}```
-```}```
+for (pkg in requirements) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg)
+  }
+}
 
 0. Keywords: Enter terms for querying publications (e.g., "microplastic AND soil").
 
