@@ -49,7 +49,7 @@ for (pkg in requirements) {
 }
 ```
 
-0. Keywords: Enter terms for querying publications (e.g., "microplastic AND soil").
+0. Keywords: Enter terms for querying publications (*e.g.*, "microplastic AND soil").
 
 1. Scopus API Key: Provide the key to access the API.
 
