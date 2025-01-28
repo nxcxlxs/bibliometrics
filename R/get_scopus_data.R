@@ -1,7 +1,12 @@
-library(httr)
-library(jsonlite)
-library(ggplot2)
-library(openxlsx)
+# read the requirements.txt file
+requirements <- readLines("requirements.txt")
+
+# install each package listed in the requirements.txt file
+for (pkg in requirements) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg)
+  }
+}
 
 # function to get the number of publications from Scopus with multiple keywords and a year filter
 get_scopus_count <- function(keywords, api_key, start_year = NULL, end_year = NULL, countries) {
