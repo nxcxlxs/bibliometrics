@@ -36,7 +36,6 @@
 
 • `get_scopus_publications(keywords, api_key, start_year, end_year, start_index, count, countries)`: Retrieves publications data from the Scopus API. Handles large results using `start` and `count` parameters to fetch in batches, uses `Sys.sleep()` to delay between requests.
 
-• `main()`: Collects user inputs for search parameters, fetches publication data, saves the data to a spreadsheet (.xlsx), and creates a bar chart (.png) for the annual count of publications.
 
 # **HOW TO USE**
 
